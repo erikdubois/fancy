@@ -1,0 +1,6 @@
+Install eww or eww-git for the toolbar
+There is no polybar here.
+
+sudo pacman -S eww
+
+We keep using theme.toml until developer of wal creates a .ron file
