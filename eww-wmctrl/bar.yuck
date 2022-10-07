@@ -1,0 +1,117 @@
+(defwidget bar0 []
+  (centerbox :orientation "h"
+    (workspaces0)
+    (title)
+    (right)))
+
+(defwidget bar1 []
+  (centerbox :orientation "h"
+    (workspaces1)
+    (title)
+    (right)))
+
+(defwindow bar0
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "0%"
+                      :width "100%"
+                      :height "10px"
+                      :anchor "top center")
+  :reserve (struts :side "top" :distance "5%")
+  (bar0))
+
+(defwindow bar1
+  :monitor 1
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "0%"
+                      :width "100%"
+                      :height "10px"
+                      :anchor "top center")
+  :reserve (struts :side "top" :distance "5%")
+  (bar1))
+
+;; Left module (tags and layout)
+
+(defwidget workspaces0 []
+  (box :class "workspaces"
+       :orientation "h"
+       :space-evenly true
+       :halign "start"
+       :spacing 10
+       :monitor 0
+    (button :onclick "wmctrl -s 0" 1)
+    (button :onclick "wmctrl -s 1" 2)
+    (button :onclick "wmctrl -s 2" 3)
+    (button :onclick "wmctrl -s 3" 4)
+    (button :onclick "wmctrl -s 4" 5)
+    (button :onclick "wmctrl -s 5" 6)
+    (button :onclick "wmctrl -s 6" 7)
+    (button :onclick "wmctrl -s 7" 8)
+    (button :onclick "wmctrl -s 8" 9)))
+
+(defwidget workspaces1 []
+  (box :class "workspaces"
+       :orientation "h"
+       :space-evenly true
+       :halign "start"
+       :spacing 10
+       :monitor 1
+    (button :onclick "wmctrl -s 0" 1)
+    (button :onclick "wmctrl -s 1" 2)
+    (button :onclick "wmctrl -s 2" 3)
+    (button :onclick "wmctrl -s 3" 4)
+    (button :onclick "wmctrl -s 4" 5)
+    (button :onclick "wmctrl -s 5" 6)
+    (button :onclick "wmctrl -s 6" 7)
+    (button :onclick "wmctrl -s 7" 8)
+    (button :onclick "wmctrl -s 8" 9)))
+
+(defwidget layout []
+  (box :class "layout" :valign "center" {wm-layout}))
+
+
+(defwidget title []
+  (label :class "title"
+         :hexpand true
+         :limit-width 50
+         :wrap true
+         :text {window-title}))
+
+;; Right modules
+
+(defwidget right []
+  (box :class "right" :halign "end" :space-evenly false :spacing 12
+    (system-infos)
+    (system-menu)
+    (time)))
+
+(defwidget system-infos []
+  (box :class "sys-infos" :space-evenly false :spacing 6
+    (metric :value {round(EWW_RAM.used_mem / EWW_RAM.total_mem, 4) * 100}
+            :label "ram"
+            :tooltip "${round(EWW_RAM.used_mem / 1000000, 3)}Go / ${round(EWW_RAM.total_mem / 1000000, 3)}Go")
+    (metric :value {(EWW_DISK["/"].used / EWW_DISK["/"].total) * 100}
+            :label "disk"
+            :tooltip "${round(EWW_DISK['/'].used / EWW_DISK['/'].total, 4) * 100}%")
+    (metric :value { battery == "" ? 0 : battery }
+            :label {battery-status == "Charging" ? "bat(+)" : "bat"}
+            :tooltip "${battery}%")))
+
+(defwidget metric [label value tooltip]
+  (box :space-evenly false
+       :tooltip tooltip
+    (label :class "metric-label" :text label)
+    (progress :value value
+              :orientation "h"
+              :class "metric-progress")))
+(defwidget system-menu []
+  (button :class "rounded-grey-box-system-menu"
+          :onclick "./toggle_sysmenu.sh"
+    "襤"))
+
+(defwidget time []
+  (box :class "time" :orientation "v"
+    (box :class "hour" hour)
+    (box :class "date" date)))
